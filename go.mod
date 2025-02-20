@@ -1,7 +1,5 @@
-module github.com/euracresearch/go-snipeit
+module github.com/farodin91/go-snipeit
 
-go 1.16
+go 1.23
 
 require github.com/google/go-querystring v1.0.0
-
-retract v0.0.1
