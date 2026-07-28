@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package snipeit
+package snipeit_test
 
 import (
 	"encoding/json"
@@ -14,13 +14,15 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/farodin91/go-snipeit"
 )
 
 const testToken = "premature optimization is the root of all evil (or at least most of it) in programming"
 
 var (
 	mux        *http.ServeMux // mux is the HTTP request multiplexer used with the test server.
-	testClient *Client
+	testClient *snipeit.Client
 )
 
 func TestTimestampJSONUnmarshal(t *testing.T) {
@@ -29,7 +31,7 @@ func TestTimestampJSONUnmarshal(t *testing.T) {
 	     	"formatted":"2019-05-21 21:37"
 	}`
 
-	var got Timestamp
+	var got snipeit.Timestamp
 	if err := json.Unmarshal([]byte(in), &got); err != nil {
 		t.Errorf("json.Unmarshal of Timestamp type failed: %v", err)
 	}
@@ -41,12 +43,14 @@ func TestTimestampJSONUnmarshal(t *testing.T) {
 }
 
 func testMethod(t *testing.T, r *http.Request, want string) {
+	t.Helper()
 	if got := r.Method; got != want {
 		t.Errorf("Request method: %v, want %v", got, want)
 	}
 }
 
 func testHeaders(t *testing.T, r *http.Request) {
+	t.Helper()
 	h := []struct {
 		key  string
 		want string
@@ -64,12 +68,16 @@ func testHeaders(t *testing.T, r *http.Request) {
 }
 
 func testFormValues(t *testing.T, r *http.Request, values map[string]string) {
+	t.Helper()
 	want := url.Values{}
 	for k, v := range values {
 		want.Set(k, v)
 	}
 
-	r.ParseForm()
+	err := r.ParseForm()
+	if err != nil {
+		t.Error(err)
+	}
 	if got := r.Form; !reflect.DeepEqual(got, want) {
 		t.Errorf("Request parameters: %v, want %v", got, want)
 	}
@@ -80,7 +88,7 @@ func TestMain(m *testing.M) {
 	server := httptest.NewServer(mux)
 
 	var err error
-	testClient, err = NewClient(server.URL, testToken)
+	testClient, err = snipeit.NewClient(server.URL, testToken)
 	if err != nil {
 		log.Fatal(err)
 	}
