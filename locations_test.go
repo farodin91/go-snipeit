@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package snipeit
+package snipeit_test
 
 import (
 	"fmt"
 	"net/http"
 	"reflect"
 	"testing"
+
+	"github.com/farodin91/go-snipeit"
 )
 
 func TestLocations(t *testing.T) {
@@ -22,7 +24,7 @@ func TestLocations(t *testing.T) {
 		fmt.Fprint(w, `{"total":1,"rows":[{"id": 1, "name": "Test"}]}`)
 	})
 
-	opt := &LocationOptions{
+	opt := &snipeit.LocationOptions{
 		Search: "Test",
 	}
 	locations, _, err := testClient.Locations(opt)
@@ -30,7 +32,7 @@ func TestLocations(t *testing.T) {
 		t.Errorf("Locations returned error: %v", err)
 	}
 
-	var want = []*Location{{ID: 1, Name: "Test"}}
+	want := []*snipeit.Location{{ID: 1, Name: "Test"}}
 	if !reflect.DeepEqual(locations, want) {
 		t.Errorf("Locations returned %v, want %+v", locations, want)
 	}
@@ -48,7 +50,7 @@ func TestLocation(t *testing.T) {
 		t.Errorf("Location returned error: %v", err)
 	}
 
-	var want = &Location{ID: 1, Name: "Test"}
+	want := &snipeit.Location{ID: 1, Name: "Test"}
 	if !reflect.DeepEqual(location, want) {
 		t.Errorf("Location returned %v, want %+v", location, want)
 	}

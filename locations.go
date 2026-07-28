@@ -5,7 +5,6 @@
 package snipeit
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -52,44 +51,12 @@ type Location struct {
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#locations
 func (c *Client) Locations(opt *LocationOptions) ([]*Location, *http.Response, error) {
-	u, err := c.AddOptions("locations", opt)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := c.NewRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var response struct {
-		Total int64
-		Rows  []*Location
-	}
-	resp, err := c.Do(req, &response)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return response.Rows, resp, nil
+	return listItems[LocationOptions, Location](c, "locations", opt)
 }
 
 // Location by ID.
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#locations-1
 func (c *Client) Location(id int64) (*Location, *http.Response, error) {
-	u := fmt.Sprintf("locations/%d", id)
-
-	req, err := c.NewRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	l := new(Location)
-	resp, err := c.Do(req, l)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return l, resp, nil
+	return findItem[Location](c, "locations", id)
 }

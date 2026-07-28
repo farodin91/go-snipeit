@@ -5,7 +5,6 @@
 package snipeit
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -45,44 +44,12 @@ type Category struct {
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#categories-1
 func (c *Client) Categories(opt *CategoryOptions) ([]*Category, *http.Response, error) {
-	u, err := c.AddOptions("categories", opt)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := c.NewRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var response struct {
-		Total int64
-		Rows  []*Category
-	}
-	resp, err := c.Do(req, &response)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return response.Rows, resp, nil
+	return listItems[CategoryOptions, Category](c, "categories", opt)
 }
 
 // Category by ID.
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#category
 func (c *Client) Category(id int64) (*Category, *http.Response, error) {
-	u := fmt.Sprintf("categories/%d", id)
-
-	req, err := c.NewRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	l := new(Category)
-	resp, err := c.Do(req, l)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return l, resp, nil
+	return findItem[Category](c, "categories", id)
 }
