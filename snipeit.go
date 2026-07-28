@@ -69,6 +69,46 @@ func newClient(httpClient *http.Client, baseURL, token string) (*Client, error) 
 	return c, nil
 }
 
+func listItems[TO any, T any](c *Client, path string, opt *TO) ([]*T, *http.Response, error) {
+	u, err := c.AddOptions(path, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := c.NewRequest(http.MethodGet, u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var response struct {
+		Total int64
+		Rows  []*T
+	}
+	resp, err := c.Do(req, &response)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return response.Rows, resp, nil
+}
+
+func findItem[T any](c *Client, path string, id int64) (*T, *http.Response, error) {
+	u := fmt.Sprintf("%s/%d", path, id)
+
+	req, err := c.NewRequest(http.MethodGet, u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	l := new(T)
+	resp, err := c.Do(req, l)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return l, resp, nil
+}
+
 func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Request, error) {
 	u, err := c.BaseURL.Parse(strings.TrimPrefix(urlStr, "/"))
 	if err != nil {

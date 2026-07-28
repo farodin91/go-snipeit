@@ -96,24 +96,5 @@ type Hardware struct {
 //
 // https://snipe-it.readme.io/reference#hardware-list
 func (c *Client) Hardware(opt *HardwareOptions) ([]*Hardware, *http.Response, error) {
-	u, err := c.AddOptions("hardware", opt)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	req, err := c.NewRequest(http.MethodGet, u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	var response struct {
-		Total int64
-		Rows  []*Hardware
-	}
-	resp, err := c.Do(req, &response)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	return response.Rows, resp, nil
+	return listItems[HardwareOptions, Hardware](c, "hardware", opt)
 }

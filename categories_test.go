@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package snipeit
+package snipeit_test
 
 import (
 	"fmt"
 	"net/http"
 	"reflect"
 	"testing"
+
+	"github.com/farodin91/go-snipeit"
 )
 
 func TestCategories(t *testing.T) {
@@ -22,7 +24,7 @@ func TestCategories(t *testing.T) {
 		fmt.Fprint(w, `{"total":1,"rows":[{"id": 1, "name": "Test"}]}`)
 	})
 
-	opt := &CategoryOptions{
+	opt := &snipeit.CategoryOptions{
 		Search: "Test",
 	}
 	categories, _, err := testClient.Categories(opt)
@@ -30,7 +32,7 @@ func TestCategories(t *testing.T) {
 		t.Errorf("Categories returned error: %v", err)
 	}
 
-	var want = []*Category{{ID: 1, Name: "Test"}}
+	want := []*snipeit.Category{{ID: 1, Name: "Test"}}
 	if !reflect.DeepEqual(categories, want) {
 		t.Errorf("Categories returned %v, want %+v", categories, want)
 	}
@@ -48,7 +50,7 @@ func TestCategory(t *testing.T) {
 		t.Errorf("Categories returned error: %v", err)
 	}
 
-	var want = &Category{ID: 1, Name: "Test"}
+	want := &snipeit.Category{ID: 1, Name: "Test"}
 	if !reflect.DeepEqual(category, want) {
 		t.Errorf("Categories returned %v, want %+v", category, want)
 	}
