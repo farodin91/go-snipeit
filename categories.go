@@ -44,12 +44,12 @@ type Category struct {
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#categories-1
 func (c *Client) Categories(opt *CategoryOptions) ([]*Category, *http.Response, error) {
-	return listItems[CategoryOptions, Category](c, "categories", opt)
+	return c.listItems[CategoryOptions, Category]("categories", opt)
 }
 
 // Category by ID.
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#category
 func (c *Client) Category(id int64) (*Category, *http.Response, error) {
-	return findItem[Category](c, "categories", id)
+	return c.findItem[Category]("categories", id)
 }

@@ -69,7 +69,7 @@ func newClient(httpClient *http.Client, baseURL, token string) (*Client, error) 
 	return c, nil
 }
 
-func listItems[TO any, T any](c *Client, path string, opt *TO) ([]*T, *http.Response, error) {
+func (c *Client) listItems[TO any, T any](path string, opt *TO) ([]*T, *http.Response, error) {
 	u, err := c.AddOptions(path, opt)
 	if err != nil {
 		return nil, nil, err
@@ -92,7 +92,7 @@ func listItems[TO any, T any](c *Client, path string, opt *TO) ([]*T, *http.Resp
 	return response.Rows, resp, nil
 }
 
-func findItem[T any](c *Client, path string, id int64) (*T, *http.Response, error) {
+func (c *Client) findItem[T any](path string, id int64) (*T, *http.Response, error) {
 	u := fmt.Sprintf("%s/%d", path, id)
 
 	req, err := c.NewRequest(http.MethodGet, u, nil)

@@ -51,12 +51,12 @@ type Location struct {
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#locations
 func (c *Client) Locations(opt *LocationOptions) ([]*Location, *http.Response, error) {
-	return listItems[LocationOptions, Location](c, "locations", opt)
+	return c.listItems[LocationOptions, Location]("locations", opt)
 }
 
 // Location by ID.
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#locations-1
 func (c *Client) Location(id int64) (*Location, *http.Response, error) {
-	return findItem[Location](c, "locations", id)
+	return c.findItem[Location]("locations", id)
 }
