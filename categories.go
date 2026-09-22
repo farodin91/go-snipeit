@@ -5,6 +5,7 @@
 package snipeit
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -43,13 +44,13 @@ type Category struct {
 // Categories lists all categories.
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#categories-1
-func (c *Client) Categories(opt *CategoryOptions) ([]*Category, *http.Response, error) {
-	return c.listItems[CategoryOptions, Category]("categories", opt)
+func (c *Client) Categories(ctx context.Context, opt *CategoryOptions) ([]*Category, *http.Response, error) {
+	return c.listItems[CategoryOptions, Category](ctx, "categories", opt)
 }
 
 // Category by ID.
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#category
-func (c *Client) Category(id int64) (*Category, *http.Response, error) {
-	return c.findItem[Category]("categories", id)
+func (c *Client) Category(ctx context.Context, id int64) (*Category, *http.Response, error) {
+	return c.findItem[Category](ctx, "categories", id)
 }

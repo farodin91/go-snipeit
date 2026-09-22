@@ -4,7 +4,10 @@
 
 package snipeit
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 // HardwareOptions specifies a subset of optional query parameters for listing
 // assets.
@@ -95,6 +98,6 @@ type Hardware struct {
 // Hardware lists all Hardware.
 //
 // https://snipe-it.readme.io/reference#hardware-list
-func (c *Client) Hardware(opt *HardwareOptions) ([]*Hardware, *http.Response, error) {
-	return c.listItems[HardwareOptions, Hardware]("hardware", opt)
+func (c *Client) Hardware(ctx context.Context, opt *HardwareOptions) ([]*Hardware, *http.Response, error) {
+	return c.listItems[HardwareOptions, Hardware](ctx, "hardware", opt)
 }
