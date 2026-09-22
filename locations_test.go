@@ -5,6 +5,7 @@
 package snipeit_test
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -14,6 +15,7 @@ import (
 )
 
 func TestLocations(t *testing.T) {
+	ctx := context.Background()
 	mux.HandleFunc("/locations", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		testHeaders(t, r)
@@ -27,7 +29,7 @@ func TestLocations(t *testing.T) {
 	opt := &snipeit.LocationOptions{
 		Search: "Test",
 	}
-	locations, _, err := testClient.Locations(opt)
+	locations, _, err := testClient.Locations(ctx, opt)
 	if err != nil {
 		t.Errorf("Locations returned error: %v", err)
 	}
@@ -39,13 +41,14 @@ func TestLocations(t *testing.T) {
 }
 
 func TestLocation(t *testing.T) {
+	ctx := context.Background()
 	mux.HandleFunc("/locations/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		testHeaders(t, r)
 		fmt.Fprint(w, `{"id": 1, "name": "Test"}`)
 	})
 
-	location, _, err := testClient.Location(1)
+	location, _, err := testClient.Location(ctx, 1)
 	if err != nil {
 		t.Errorf("Location returned error: %v", err)
 	}

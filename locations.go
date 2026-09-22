@@ -5,6 +5,7 @@
 package snipeit
 
 import (
+	"context"
 	"net/http"
 )
 
@@ -50,13 +51,13 @@ type Location struct {
 // Locations lists all locations.
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#locations
-func (c *Client) Locations(opt *LocationOptions) ([]*Location, *http.Response, error) {
-	return c.listItems[LocationOptions, Location]("locations", opt)
+func (c *Client) Locations(ctx context.Context, opt *LocationOptions) ([]*Location, *http.Response, error) {
+	return c.listItems[LocationOptions, Location](ctx, "locations", opt)
 }
 
 // Location by ID.
 //
 // Snipe-IT API doc: https://snipe-it.readme.io/reference#locations-1
-func (c *Client) Location(id int64) (*Location, *http.Response, error) {
-	return c.findItem[Location]("locations", id)
+func (c *Client) Location(ctx context.Context, id int64) (*Location, *http.Response, error) {
+	return c.findItem[Location](ctx, "locations", id)
 }

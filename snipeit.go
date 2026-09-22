@@ -8,6 +8,7 @@ package snipeit
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -69,13 +70,13 @@ func newClient(httpClient *http.Client, baseURL, token string) (*Client, error) 
 	return c, nil
 }
 
-func (c *Client) listItems[TO any, T any](path string, opt *TO) ([]*T, *http.Response, error) {
+func (c *Client) listItems[TO any, T any](ctx context.Context, path string, opt *TO) ([]*T, *http.Response, error) {
 	u, err := c.AddOptions(path, opt)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -92,10 +93,10 @@ func (c *Client) listItems[TO any, T any](path string, opt *TO) ([]*T, *http.Res
 	return response.Rows, resp, nil
 }
 
-func (c *Client) findItem[T any](path string, id int64) (*T, *http.Response, error) {
+func (c *Client) findItem[T any](ctx context.Context, path string, id int64) (*T, *http.Response, error) {
 	u := fmt.Sprintf("%s/%d", path, id)
 
-	req, err := c.NewRequest(http.MethodGet, u, nil)
+	req, err := c.NewRequest(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -109,7 +110,7 @@ func (c *Client) findItem[T any](path string, id int64) (*T, *http.Response, err
 	return l, resp, nil
 }
 
-func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Request, error) {
+func (c *Client) NewRequest(ctx context.Context, method, urlStr string, body interface{}) (*http.Request, error) {
 	u, err := c.BaseURL.Parse(strings.TrimPrefix(urlStr, "/"))
 	if err != nil {
 		return nil, err
@@ -126,7 +127,7 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 		}
 	}
 
-	req, err := http.NewRequest(method, u.String(), buf)
+	req, err := http.NewRequestWithContext(ctx, method, u.String(), buf)
 	if err != nil {
 		return nil, err
 	}

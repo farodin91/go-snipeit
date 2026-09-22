@@ -5,6 +5,7 @@
 package snipeit_test
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -14,6 +15,7 @@ import (
 )
 
 func TestCategories(t *testing.T) {
+	ctx := context.Background()
 	mux.HandleFunc("/categories", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		testHeaders(t, r)
@@ -27,7 +29,7 @@ func TestCategories(t *testing.T) {
 	opt := &snipeit.CategoryOptions{
 		Search: "Test",
 	}
-	categories, _, err := testClient.Categories(opt)
+	categories, _, err := testClient.Categories(ctx, opt)
 	if err != nil {
 		t.Errorf("Categories returned error: %v", err)
 	}
@@ -39,13 +41,14 @@ func TestCategories(t *testing.T) {
 }
 
 func TestCategory(t *testing.T) {
+	ctx := context.Background()
 	mux.HandleFunc("/categories/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		testHeaders(t, r)
 		fmt.Fprint(w, `{"id": 1, "name": "Test"}`)
 	})
 
-	category, _, err := testClient.Category(1)
+	category, _, err := testClient.Category(ctx, 1)
 	if err != nil {
 		t.Errorf("Categories returned error: %v", err)
 	}

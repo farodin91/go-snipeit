@@ -5,6 +5,7 @@
 package snipeit_test
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -14,6 +15,7 @@ import (
 )
 
 func TestHardware(t *testing.T) {
+	ctx := context.Background()
 	mux.HandleFunc("/hardware", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, http.MethodGet)
 		testHeaders(t, r)
@@ -27,7 +29,7 @@ func TestHardware(t *testing.T) {
 	opt := &snipeit.HardwareOptions{
 		LocationID: 1,
 	}
-	hardware, _, err := testClient.Hardware(opt)
+	hardware, _, err := testClient.Hardware(ctx, opt)
 	if err != nil {
 		t.Errorf("Hardware returned error: %v", err)
 	}
