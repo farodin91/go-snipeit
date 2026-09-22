@@ -96,5 +96,5 @@ type Hardware struct {
 //
 // https://snipe-it.readme.io/reference#hardware-list
 func (c *Client) Hardware(opt *HardwareOptions) ([]*Hardware, *http.Response, error) {
-	return listItems[HardwareOptions, Hardware](c, "hardware", opt)
+	return c.listItems[HardwareOptions, Hardware]("hardware", opt)
 }
